@@ -8,13 +8,19 @@ import Login from './Login';
 import Register from './Register';
 import Checkout from './Checkout';
 import CategoryElements from './CategoryElements';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
+import app from './firebase';
+import Detailed from './Detailed';
 
 // import data from './data'
+const userContext = createContext()
+export { userContext }
+
 
 function App() {
 
   const [product, setProduct] = useState([])
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     fetch('https://fakestoreapi.com/products')
@@ -27,17 +33,26 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar></Navbar>
-      <Routes>
-        <Route path='/' element={<Products data={product}></Products>}></Route>
-        <Route path='/categories' element={<Categories></Categories>}></Route>
-        <Route path='/categories/:category' element={<CategoryElements></CategoryElements>}></Route>
-        <Route path='/login' element={<Login></Login>}></Route>
-        <Route path='/register' element={<Register></Register>}></Route>
-        <Route path='/checkout' element={<Checkout></Checkout>}></Route>
-      </Routes>
+      <userContext.Provider value={[user, setUser]}>
+        <Navbar></Navbar>
+        <Routes>
+          <Route path='/' element={<Products data={product}></Products>}></Route>
+          <Route path='/detail/:productId' element={<Detailed></Detailed>}></Route>
+          <Route path='/categories' element={<Categories></Categories>}></Route>
+          <Route path='/categories/:category' element={<CategoryElements></CategoryElements>}></Route>
+          <Route path='/login' element={<Login></Login>}></Route>
+          <Route path='/register' element={<Register></Register>}></Route>
+          <Route path='/checkout' element={<Checkout></Checkout>}></Route>
+          <Route path="*" element={<h1>404 Not Found</h1>}></Route>
+        </Routes>
+      </userContext.Provider>
     </div>
   );
 }
 
 export default App;
+
+
+// Add to cart: User Should be logged In
+// Checkout Page
+// Hosting

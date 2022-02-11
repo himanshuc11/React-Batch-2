@@ -1,10 +1,36 @@
 import React from 'react'
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { userContext } from './App';
 
 function Register() {
   const [form, setForm] = React.useState({"email": "", "password": ""})
+  let navigate = useNavigate()
+  let [user, setUser] = useContext(userContext)
+
   const handleFormChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value})
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, form.email, form.password)
+      .then((userCredential) => {
+        console.log(userCredential)
+      // Signed in 
+      const user = userCredential.user;
+      setUser(user)
+      navigate("/")
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorMessage)
+    });
+  }
+
 
 
   return (
@@ -25,7 +51,7 @@ function Register() {
       </label>
 
       <br />
-      <button>Submit</button>
+      <button onClick={handleSubmit}>Submit</button>
     </form>
   )
 }

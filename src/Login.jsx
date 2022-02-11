@@ -1,10 +1,33 @@
 import React from 'react'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { userContext } from './App';
 
 function Login() {
 
   const [form, setForm] = React.useState({"email": "", "password": ""})
+  let navigate = useNavigate()
+  let [user, setUser] = useContext(userContext)
+
   const handleFormChange = (e) => {
     setForm({...form, [e.target.name]: e.target.value})
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, form.email, form.password)
+      .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      setUser(user)
+      navigate("/")
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
   }
 
 
@@ -26,7 +49,7 @@ function Login() {
       </label>
 
       <br />
-      <button>Submit</button>
+      <button onClick={handleSubmit}>Submit</button>
     </form>
   )
 }
