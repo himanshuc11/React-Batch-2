@@ -14,13 +14,16 @@ import Detailed from './Detailed';
 
 // import data from './data'
 const userContext = createContext()
-export { userContext }
+const cartContext = createContext()
+
+export { userContext, cartContext }
 
 
 function App() {
 
   const [product, setProduct] = useState([])
   const [user, setUser] = useState(null)
+  const [cart, setCart] = useState([])
 
   useEffect(() => {
     fetch('https://fakestoreapi.com/products')
@@ -34,17 +37,19 @@ function App() {
   return (
     <div className="App">
       <userContext.Provider value={[user, setUser]}>
+        <cartContext.Provider value={[cart, setCart]}>
         <Navbar></Navbar>
-        <Routes>
-          <Route path='/' element={<Products data={product}></Products>}></Route>
-          <Route path='/detail/:productId' element={<Detailed></Detailed>}></Route>
-          <Route path='/categories' element={<Categories></Categories>}></Route>
-          <Route path='/categories/:category' element={<CategoryElements></CategoryElements>}></Route>
-          <Route path='/login' element={<Login></Login>}></Route>
-          <Route path='/register' element={<Register></Register>}></Route>
-          <Route path='/checkout' element={<Checkout></Checkout>}></Route>
-          <Route path="*" element={<h1>404 Not Found</h1>}></Route>
-        </Routes>
+          <Routes>
+            <Route path='/' element={<Products data={product}></Products>}></Route>
+            <Route path='/detail/:productId' element={<Detailed></Detailed>}></Route>
+            <Route path='/categories' element={<Categories></Categories>}></Route>
+            <Route path='/categories/:category' element={<CategoryElements></CategoryElements>}></Route>
+            <Route path='/login' element={<Login></Login>}></Route>
+            <Route path='/register' element={<Register></Register>}></Route>
+            <Route path='/checkout' element={<Checkout></Checkout>}></Route>
+            <Route path="*" element={<h1>404 Not Found</h1>}></Route>
+          </Routes>
+        </cartContext.Provider>
       </userContext.Provider>
     </div>
   );
